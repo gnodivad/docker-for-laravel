@@ -26,7 +26,8 @@ class Kernel extends ConsoleKernel
     {
         $schedule
             ->command('inspire')
-            ->everyMinute();
+            ->everyMinute()
+            ->appendOutputTo('/proc/1/fd/1');
     }
 
     /**

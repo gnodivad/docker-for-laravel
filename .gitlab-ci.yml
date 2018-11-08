@@ -1,10 +1,12 @@
 stages:
   - build-php
+  - build-frontend
 
 cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:
     - vendor/
+    - node_modules/
 
 # Master
 build-master-php:
@@ -28,3 +30,15 @@ build-master-php:
   artifacts:
     paths:
       - ./vendor
+
+build-master-frontend:
+  stage: build-frontend
+  image: node:8.11
+  script:
+    - yarn install
+    - yarn run production
+  artifacts:
+    paths:
+      - ./public/js
+      - ./public/css
+      - ./public/mix-manifest.json

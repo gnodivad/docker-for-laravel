@@ -1,6 +1,5 @@
 stages:
-  - build-php
-  - build-frontend
+  - build
 
 cache:
   key: ${CI_COMMIT_REF_SLUG}
@@ -10,7 +9,7 @@ cache:
 
 # Master
 build-master-php:
-  stage: build-php
+  stage: build
   image: php:7.2
   before_script:
     - set -xe
@@ -32,7 +31,7 @@ build-master-php:
       - ./vendor
 
 build-master-frontend:
-  stage: build-frontend
+  stage: build
   image: node:8.11
   script:
     - yarn install

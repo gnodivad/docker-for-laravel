@@ -29,7 +29,10 @@ COPY docker/config/nginx/default /etc/nginx/sites-available/default
 COPY docker/config/nginx/h5bp/ /etc/nginx/h5bp
 COPY docker/start.sh /usr/local/bin/start
 
-RUN chown -R www-data:www-data /var/www/html \
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
+    && chmod +x /usr/local/bin/composer \
+    && composer check-platform-reqs \
+    && chown -R www-data:www-data /var/www/html \
     && chmod +x /usr/local/bin/start \
     && ln -sf /dev/stdout /var/log/nginx/access.log \
     && ln -sf /dev/stdout /var/log/nginx/error.log

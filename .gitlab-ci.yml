@@ -1,5 +1,6 @@
 stages:
   - build
+  - build-docker
 
 cache:
   key: ${CI_COMMIT_REF_SLUG}
@@ -41,3 +42,14 @@ build-master-frontend:
       - ./public/js
       - ./public/css
       - ./public/mix-manifest.json
+
+build-master-docker:
+  stage: build-docker
+  image: docker:stable
+  services:
+    - docker:dind
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  script:
+    - docker build --pull -t "$CI_REGISTRY_IMAGE" -f docker/Dockerfile .
+    - docker push "$CI_REGISTRY_IMAGE"

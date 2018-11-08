@@ -12,6 +12,9 @@ cache:
 build-master-php:
   stage: build
   image: php:7.2
+  only:
+    - master
+    - tags
   before_script:
     - set -xe
     - apt-get update -yqq
@@ -34,6 +37,9 @@ build-master-php:
 build-master-frontend:
   stage: build
   image: node:8.11
+  only:
+    - master
+    - tags
   script:
     - yarn install
     - yarn run production
@@ -46,6 +52,8 @@ build-master-frontend:
 build-master-docker:
   stage: build-docker
   image: docker:stable
+  only:
+    - master
   services:
     - docker:dind
   before_script:
@@ -53,3 +61,16 @@ build-master-docker:
   script:
     - docker build --pull -t "$CI_REGISTRY_IMAGE" -f docker/Dockerfile .
     - docker push "$CI_REGISTRY_IMAGE"
+
+build-tag-docker:
+  stage: build-docker
+  image: docker:stable
+  only:
+    - tags
+  services:
+    - docker:dind
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  script:
+    - docker build --pull -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_TAG" -f docker/Dockerfile .
+    - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_TAG"
